@@ -3,18 +3,18 @@ import socket
 import time
 
 
-def client_program():
+def clientProgram():
     print("trying to connect to server")
-    host = "10.22.28.16"  # replace with your server's IP
-    port = 5050  # socket server port number
+    host = "10.22.28.16"  
+    port = 5050 
 
-    client_socket = socket.socket()  # instantiate socket
-    client_socket.connect((host, port))  # connect to the server
+    client_socket = socket.socket()  
+    client_socket.connect((host, port)) 
 
-    print("waiting for keyboard input - press 'e' to start")
+    print("game connected - press 'e' to start game")
     while True:
         if keyboard.is_pressed('q'):
-            break  # quit client
+            break  #quit
 
         if keyboard.is_pressed('e'):
             client_socket.send('e'.encode())
@@ -34,11 +34,10 @@ def client_program():
             time.sleep(0.1)
 
         if keyboard.is_pressed('r'):
-            client_socket.send('r'.encode())  # send 'r' to restart the game
+            client_socket.send('r'.encode())  #restart the game
             time.sleep(0.2)
 
-    client_socket.close()  # close the connection
-
+    client_socket.close()  
 
 if __name__ == '__main__':
-    client_program()
+    clientProgram()

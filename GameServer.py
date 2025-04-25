@@ -5,51 +5,51 @@ import sys
 import random
 
 name = "bucket"
-bucket_x = 300
-bucket_y = 350
+bucketX = 300
+bucketY = 350
 score = 0
-game_over = False
-game_started = False
+gameOver = False
+gameHasStarted = False
 
-# Falling object
-falling_x = random.randint(0, 575)
-falling_y = 0
-falling_speed = 3
+#falling object
+objectX = random.randint(0, 575)
+objectY = 0
+objectSpeed = 3
 
-# Bucket speed increment (for responsiveness)
-bucket_speed = 20
+#bucket speed increment
+bucketSpeed = 20
 
-def reset_game():
-    global bucket_x, bucket_y, score, falling_x, falling_y, falling_speed, game_over, game_started, bucket_speed
-    # Reset the game state
-    bucket_x = 300
-    bucket_y = 350
+def resetGame():
+    global bucketX, bucketY, score, objectX, objectY, objectSpeed, gameOver, gameHasStarted, bucketSpeed
+    #reset the game state
+    bucketX = 300
+    bucketY = 350
     score = 0
-    falling_x = random.randint(0, 575)
-    falling_y = 0
-    falling_speed = 3
-    game_over = False
-    game_started = False
-    bucket_speed = 30  # Reset bucket speed to default
+    objectX = random.randint(0, 575)
+    objectY = 0
+    objectSpeed = 3
+    gameOver = False
+    gameHasStarted = False
+    bucketSpeed = 30 #reset bucket speed to default
 
-def GameThread():
-    global bucket_x, bucket_y, score, falling_x, falling_y, falling_speed, game_over, game_started, bucket_speed
+def gameThread():
+    global bucketX, bucketY, score, objectX, objectY, objectSpeed, gameOver, gameHasStarted, bucketSpeed
 
     pygame.init()
     background = (204, 230, 255)
-    bucket_color = (0, 51, 204)
-    object_color = (255, 0, 0)
-    text_color = (0, 0, 0)
+    bucketColor = (0, 51, 204)
+    objectColor = (255, 0, 0)
+    textColor = (0, 0, 0)
 
     fps = pygame.time.Clock()
-    screen_size = screen_width, screen_height = 600, 400
-    screen = pygame.display.set_mode(screen_size)
+    screenSize = screen_width, screen_height = 600, 400
+    screen = pygame.display.set_mode(screenSize)
     pygame.display.set_caption('Bucket Catch Game')
 
     font = pygame.font.SysFont(None, 36)
 
-    bucket_rect = pygame.Rect(0, 0, 75, 30)
-    object_rect = pygame.Rect(0, 0, 25, 25)
+    bucketRect = pygame.Rect(0, 0, 75, 30)
+    objectRect = pygame.Rect(0, 0, 25, 25)
 
     while True:
         for event in pygame.event.get():
@@ -59,47 +59,47 @@ def GameThread():
 
         screen.fill(background)
 
-        if not game_started:
-            waiting_text = font.render("Press 'E' to Start the Game", True, text_color)
-            screen.blit(waiting_text, (130, 180))
-        elif not game_over:
-            # Update positions
-            bucket_rect.center = (bucket_x, bucket_y)
-            object_rect.center = (falling_x, falling_y)
+        if not gameHasStarted:
+            startText = font.render("Press 'E' to Start the Game", True, textColor)
+            screen.blit(startText, (130, 180))
+        elif not gameOver:
+            #update positions
+            bucketRect.center = (bucketX, bucketY)
+            objectRect.center = (objectX, objectY)
 
-            # Draw shapes
-            pygame.draw.rect(screen, bucket_color, bucket_rect)
-            pygame.draw.rect(screen, object_color, object_rect)
+            #draw shapes
+            pygame.draw.rect(screen, bucketColor, bucketRect)
+            pygame.draw.rect(screen, objectColor, objectRect)
 
-            # Collision
-            if bucket_rect.colliderect(object_rect):
+            #collision
+            if bucketRect.colliderect(objectRect):
                 score += 1
-                falling_y = 0
-                falling_x = random.randint(0, 575)
-                falling_speed += 0.3  # increase falling speed as the game progresses
-                bucket_speed = min(30, bucket_speed + 1)  # increase bucket speed, capped at 30
+                objectY = 0
+                objectX = random.randint(0, 575)
+                objectSpeed += 0.3  #increase falling speed as the game progresses
+                bucketSpeed = min(30, bucketSpeed + 1)  # increase bucket speed, capped at 30
             else:
-                falling_y += falling_speed
+                objectY += objectSpeed
 
-            # Check game over
-            if falling_y >= 400:
-                game_over = True
+            #check game over
+            if objectY >= 400:
+                gameOver = True
 
-            # Score
-            score_text = font.render("Score: " + str(score), True, text_color)
-            screen.blit(score_text, (10, 10))
+            #score
+            scoreText = font.render("Score: " + str(score), True, textColor)
+            screen.blit(scoreText, (10, 10))
         else:
-            # Show Game Over
-            over_text = font.render("Game Over! Final Score: " + str(score), True, text_color)
+            #show Game Over
+            gameOverText = font.render("Game Over! Final Score: " + str(score), True, textColor)
             screen.fill((255, 204, 204))
-            screen.blit(over_text, (120, 180))
+            screen.blit(gameOverText, (120, 180))
 
         pygame.display.update()
         fps.tick(60)
 
 
-def ServerThread():
-    global bucket_x, bucket_y, game_started, bucket_speed
+def serverThread():
+    global bucketX, bucketY, gameHasStarted, bucketSpeed
 
     host = socket.gethostbyname(socket.gethostname())
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -124,29 +124,29 @@ def ServerThread():
             break
 
         if data.lower() == 'e':
-            game_started = True
+            gameHasStarted = True
         if data == 'a':
-            bucket_x -= bucket_speed  # Use the dynamic bucket speed
+            bucketX -= bucketSpeed  #use the dynamic bucket speed
         if data == 'd':
-            bucket_x += bucket_speed
+            bucketX += bucketSpeed
         if data == 'w':
-            bucket_y -= bucket_speed
+            bucketY -= bucketSpeed
         if data == 's':
-            bucket_y += bucket_speed
+            bucketY += bucketSpeed
 
-        # Boundary check
-        bucket_x = max(0, min(bucket_x, 600))
-        bucket_y = max(0, min(bucket_y, 400))
+        #boundary check
+        bucketX = max(0, min(bucketX, 600))
+        bucketY = max(0, min(bucketY, 400))
 
-        if data == 'r':  # Restart the game
+        if data == 'r':  #restart the game
             print("Restarting game...")
-            reset_game()  # Reset all game variables
+            resetGame()  #reset all game variables
 
     conn.close()
 
 
-# Run threads
-t1 = threading.Thread(target=GameThread)
-t2 = threading.Thread(target=ServerThread)
+#run threads
+t1 = threading.Thread(target=gameThread)
+t2 = threading.Thread(target=serverThread)
 t1.start()
 t2.start()
