@@ -2,7 +2,7 @@
 
 
 download both .py + images.
-put images in same folder as .py
+put images in folder titled "images"
 open two diffrent terminals
 cd into folder
 python GameServer.py
