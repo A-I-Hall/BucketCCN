@@ -29,7 +29,7 @@ def resetGame():
     objectSpeed = 3
     gameOver = False
     gameHasStarted = True  # Keep it True so game restarts instantly
-    bucketSpeed = 40
+    bucketSpeed = 30
 
 def gameThread():
     global bucketX, bucketY, score, objectX, objectY, objectSpeed, gameOver, gameHasStarted, bucketSpeed
@@ -39,7 +39,7 @@ def gameThread():
     fps = pygame.time.Clock()
     screenSize = screen_width, screen_height = 1200, 800
     screen = pygame.display.set_mode(screenSize)
-    pygame.display.set_caption('Rat Bucket Catch')
+    pygame.display.set_caption('Rat!! Cheese Catching Game')
 
     startImage = pygame.image.load("images/Start.png").convert()
     startImage = pygame.transform.scale(startImage, (screen_width, screen_height))
@@ -101,7 +101,7 @@ def gameThread():
                 objectY = 0
                 objectX = random.randint(0, screen_width - objectRect.width)
                 objectSpeed += 0.3
-                bucketSpeed = min(30, bucketSpeed + 1)
+                bucketSpeed = min(60, bucketSpeed + 1)
             else:
                 objectY += objectSpeed
 
