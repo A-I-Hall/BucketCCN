@@ -5,7 +5,7 @@ import time
 
 def clientProgram():
     print("trying to connect to server")
-    host = "10.12.190.64" #"10.22.28.16"  
+    host = "10.12.186.43" #"10.22.28.16"  
     port = 5050 
 
     client_socket = socket.socket()  
@@ -13,9 +13,6 @@ def clientProgram():
 
     print("game connected - press 'e' to start game")
     while True:
-        if keyboard.is_pressed('q'):
-            break  #quit
-
         if keyboard.is_pressed('e'):
             client_socket.send('e'.encode())
             time.sleep(0.2)
